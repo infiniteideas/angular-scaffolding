@@ -69,11 +69,6 @@ module.exports = generator.Base.extend({
      */
   },
 
-  default: {
-    method1: function() {
-      log('hello yo');
-    }
-  },
 
   writing: {
     /*
@@ -85,10 +80,29 @@ module.exports = generator.Base.extend({
     /*
      *where installation are run (npm, bower)
      */
+    method3: function(){
+      this.log('install dependences now...');
+    }
+  },
+
+  default: {
+    method1: function() {
+      this.src.copy('Gruntfile.js', 'Gruntfile.js');
+      log('hello yo');
+    }
   },
 
   end: {
     //called last
+    installingLodash: function() {
+      var done = this.async();
+      this.log('install lodash');
+      this.npmInstall(['lodash'], {'saveDev': true}, done);
+      //this.bowerInstall();
+      //this.installDependencies()
+      // make sure spawnmethod method inside the end queue, users don't want to wait for an installation command to complete
+      //this.spawnCommand('composer', ['install']);
+    }
   }
 
 });
