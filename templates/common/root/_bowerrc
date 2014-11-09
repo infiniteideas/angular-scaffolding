@@ -1,0 +1,4 @@
+{
+    "directory": "<%= bowercomponents %>",
+    "json": "bower.json"
+}

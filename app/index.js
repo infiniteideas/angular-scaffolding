@@ -1,20 +1,54 @@
-var generator = require('yeoman-generator'),
-    log = console.log;
+var yeoman = require('yeoman-generator'),
+    util = require('util'),
+    path = require('path'),
+    chalk = require('chalk');
 
-var MyBase = generator.Base.extend({
-  helper: function() {
-    log('this is also a helper method');
+var Generator = module.exports = function Generator() {
+  yeoman.generators.Base.apply(this, arguments);
+
+  try {
+    this.appname = require(path.join(process.cwd(), 'bower.json')).name;
+  } catch (e) {
+    this.appname = path.basename(process.cwd());
   }
-});
+  this.appname = this._.slugify(this._.humanize(this.appname));
+  this.log(this.appname);
 
-//module.exports = MyBase.extend({
-  //exec: function() {
-    //this.helper();
-  //}
-//});
+  this.sourceRoot(path.join(__dirname,'../templates'));
 
-module.exports = generator.Base.extend({
+};
 
+util.inherits(Generator, yeoman.generators.Base);
+
+Generator.prototype.askForBower = function askForBower() {
+    var done = this.async();
+    this.prompt({
+      type: 'input',
+      name: 'bowercomponents',
+      message: 'where do you want to save your bower files',
+      default: 'bower_components'
+    }, function(answers) {
+      this.bowercomponents = answers.bowercomponents;
+      done();
+    }.bind(this));
+}
+
+Generator.prototype.packageFiles = function packageFiles() {
+    this.src.copy('common/root/_editorconfig', '.editorconfig');
+    this.src.copy('common/root/_gitignore', '.gitignore');
+    this.template('common/root/_bowerrc', '.bowerrc');
+};
+
+
+
+yeoman.generators.NamedBase.extend({
+
+
+  constructor: function(args, options) {
+    yeoman.generators.NamedBase.apply(this, arguments);
+    this.argument()['name'];
+    console.log(this['name']);
+  },
    /*
     *each method directly attached to a generator prototype is considered to be an action
     *each action is run in sequence by yeoman envrioment run loop
@@ -47,10 +81,10 @@ module.exports = generator.Base.extend({
    */
   initializing: {
     method1: function() {
-      log('initializing: method1');
+      this.log('initializing: method1');
     },
     method2: function() {
-      log('initializing: method2');
+      this.log('initializing: method2');
     }
   },
 
@@ -59,7 +93,7 @@ module.exports = generator.Base.extend({
      *where you call this.prompt()
      */
     method1: function() {
-      log('called from prompting');
+      this.log('called from prompting');
     }
   },
 
@@ -87,8 +121,8 @@ module.exports = generator.Base.extend({
 
   default: {
     method1: function() {
-      this.src.copy('Gruntfile.js', 'Gruntfile.js');
-      log('hello yo');
+      this.sourceRoot(path.join(__dirname,'../templates'));
+      this.copy('root/_editorconfig', '.editorconfig');
     }
   },
 
