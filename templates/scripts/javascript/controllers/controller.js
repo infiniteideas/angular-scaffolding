@@ -1,3 +1,3 @@
 angular.module('<%= appname %>')
-       .controller('controllername', function() {
+       .controller('ControllerName', function() {
        });

@@ -27,5 +27,5 @@ Generator.prototype.hello = function hello() {
   this.log('hello');
 };
 Generator.prototype.createController = function hello() {
-  this.template('scripts/javascript/controllers/controller.js', 'app/feature/featureController.js');
+  this.template('scripts/javascript/services/service.js', 'app/feature/featureService.js');
 };
